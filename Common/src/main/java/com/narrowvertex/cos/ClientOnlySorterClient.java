@@ -17,6 +17,10 @@ public class ClientOnlySorterClient {
 
     }
 
+    public void sort() {
+
+    }
+
     public static ClientOnlySorterClient getInstance() {
         return instance;
     }
