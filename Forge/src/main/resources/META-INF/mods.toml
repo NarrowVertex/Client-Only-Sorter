@@ -1,0 +1,13 @@
+modLoader="javafml"
+loaderVersion="${loaderVersionRange}"
+license="All rights reserved"
+[[mods]]
+modId="${modId}"
+version="${version}"
+displayName="${modName}"
+logoFile="logo.png"
+authors="${modAuthor}"
+description='''
+${modDescription}
+'''
+credits="${modCredits}"

@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "com.narrowvertex.cos.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "cos.mixin.refmap.json",
+  "server": [
+  ],
+  "mixins": [
+  ],
+  "client": [
+  ],
+  "minVersion": "0.8"
+}
