@@ -17,8 +17,6 @@ public class KeyBindings {
     public void register() {
         ClientOnlySorterClient client = ClientOnlySorterClient.getInstance();
 
-        register(sortKey, client::sort);
-
         ClientOnlySorterClient.LOGGER.info("Key Registered!");
     }
 

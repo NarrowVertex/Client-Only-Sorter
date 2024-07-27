@@ -33,7 +33,6 @@ public class KeyBindings {
 
         if(event.phase == TickEvent.Phase.END) {
             while(sortKey.consumeClick()) {
-                client.sort();
             }
         }
     }
