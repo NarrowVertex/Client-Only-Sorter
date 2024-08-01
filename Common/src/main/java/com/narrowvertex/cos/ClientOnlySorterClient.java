@@ -74,7 +74,25 @@ public class ClientOnlySorterClient {
 
         @Override
         public void run() {
-            sortSlots(containerScreen, x, y, slots);
+            sortSlots2(containerScreen, x, y, slots);
+        }
+    }
+
+    public static void sortSlots2(ContainerScreen containerScreen, int x, int y, NonNullList<Slot> slots) {
+        int n = slots.size();
+        int leastID;
+        int leastIDSlotIndex;
+        for (int i = 0; i < n - 1; i++) {
+            leastID = getID(slots.get(i));
+            leastIDSlotIndex = i;
+            for (int j = i + 1; j < n; j++) {
+                if (getID(slots.get(j)) < leastID) {
+                    leastID = getID(slots.get(j));
+                    leastIDSlotIndex = j;
+                }
+            }
+            if(leastIDSlotIndex != i)
+                swap(containerScreen, 0, 0, slots.get(i), slots.get(leastIDSlotIndex));
         }
     }
 
@@ -144,6 +162,13 @@ public class ClientOnlySorterClient {
         return id;
     }
 
+    static int getID(Slot slot) {
+        int id = Item.getId(slot.getItem().getItem());
+        if(id == 0)
+            id = 99999;
+        return id;
+    }
+
     static void swap(ContainerScreen containerScreen, int x, int y, Slot slotA, Slot slotB) {
         Minecraft mc = Minecraft.getInstance();
 
@@ -169,22 +194,23 @@ public class ClientOnlySorterClient {
 
         Slot tempSlot = ((ContainerScreenInterfaceMixin) containerScreen).getSlot();
 
-        ((ContainerScreenInterfaceMixin) containerScreen).setSlot(slotA);
-        containerScreen.keyPressed(swapKey, getScancode(swapKey), 0);
-
-        ((ContainerScreenInterfaceMixin) containerScreen).setSlot(slotB);
-        containerScreen.keyPressed(swapKey, getScancode(swapKey), 0);
-
-        ((ContainerScreenInterfaceMixin) containerScreen).setSlot(slotA);
-        containerScreen.keyPressed(swapKey, getScancode(swapKey), 0);
-
-        ((ContainerScreenInterfaceMixin) containerScreen).setSlot(tempSlot);
-
         try {
+            ((ContainerScreenInterfaceMixin) containerScreen).setSlot(slotA);
+            containerScreen.keyPressed(swapKey, getScancode(swapKey), 0);
+            Thread.sleep(100);
+
+            ((ContainerScreenInterfaceMixin) containerScreen).setSlot(slotB);
+            containerScreen.keyPressed(swapKey, getScancode(swapKey), 0);
+            Thread.sleep(100);
+
+            ((ContainerScreenInterfaceMixin) containerScreen).setSlot(slotA);
+            containerScreen.keyPressed(swapKey, getScancode(swapKey), 0);
             Thread.sleep(100);
         } catch(InterruptedException e) {
             e.printStackTrace();
         }
+
+        ((ContainerScreenInterfaceMixin) containerScreen).setSlot(tempSlot);
     }
 
     static int getSwapKey() {
