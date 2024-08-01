@@ -8,7 +8,9 @@
   "mixins": [
   ],
   "client": [
-    "ContainerScreenMixin"
+    "ContainerScreenInterfaceMixin",
+    "ContainerScreenMixin",
+    "KeyMappingMixin"
   ],
   "minVersion": "0.8"
 }

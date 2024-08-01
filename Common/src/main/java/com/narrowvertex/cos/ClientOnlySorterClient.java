@@ -1,7 +1,11 @@
 package com.narrowvertex.cos;
 
 import com.mojang.authlib.minecraft.client.MinecraftClient;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
+import com.narrowvertex.cos.mixin.ContainerScreenInterfaceMixin;
+import com.narrowvertex.cos.mixin.KeyMappingMixin;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
@@ -153,18 +157,42 @@ public class ClientOnlySorterClient {
         if(!(currentScreen instanceof ContainerScreen))
             return;
 
-        containerScreen.mouseClicked(x + slotA.x + 4, y + slotA.y + 4, 0);
-        containerScreen.mouseReleased(x + slotA.x + 4, y + slotA.y + 4, 0);
-        containerScreen.mouseClicked(x + slotB.x + 4, y + slotB.y + 4, 0);
-        containerScreen.mouseReleased(x + slotB.x + 4, y + slotB.y + 4, 0);
-        containerScreen.mouseClicked(x + slotA.x + 4, y + slotA.y + 4, 0);
-        containerScreen.mouseReleased(x + slotA.x + 4, y + slotA.y + 4, 0);
+//        containerScreen.mouseClicked(x + slotA.x + 4, y + slotA.y + 4, 0);
+//        containerScreen.mouseReleased(x + slotA.x + 4, y + slotA.y + 4, 0);
+//        containerScreen.mouseClicked(x + slotB.x + 4, y + slotB.y + 4, 0);
+//        containerScreen.mouseReleased(x + slotB.x + 4, y + slotB.y + 4, 0);
+//        containerScreen.mouseClicked(x + slotA.x + 4, y + slotA.y + 4, 0);
+//        containerScreen.mouseReleased(x + slotA.x + 4, y + slotA.y + 4, 0);
+        // containerScreen.keyPressed()
+        int swapKey = getSwapKey();
+
+
+        Slot tempSlot = ((ContainerScreenInterfaceMixin) containerScreen).getSlot();
+
+        ((ContainerScreenInterfaceMixin) containerScreen).setSlot(slotA);
+        containerScreen.keyPressed(swapKey, getScancode(swapKey), 0);
+
+        ((ContainerScreenInterfaceMixin) containerScreen).setSlot(slotB);
+        containerScreen.keyPressed(swapKey, getScancode(swapKey), 0);
+
+        ((ContainerScreenInterfaceMixin) containerScreen).setSlot(slotA);
+        containerScreen.keyPressed(swapKey, getScancode(swapKey), 0);
+
+        ((ContainerScreenInterfaceMixin) containerScreen).setSlot(tempSlot);
 
         try {
             Thread.sleep(100);
         } catch(InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    static int getSwapKey() {
+        return ((KeyMappingMixin)Minecraft.getInstance().options.keySwapOffhand).getKey().getValue();
+    }
+
+    static int getScancode(int keyCode) {
+        return InputConstants.Type.SCANCODE.getOrCreate(keyCode).getValue();
     }
 
     public static ClientOnlySorterClient getInstance() {
