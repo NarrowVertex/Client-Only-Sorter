@@ -2,49 +2,31 @@ package com.narrowvertex.cos.mixin;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.narrowvertex.cos.ClientOnlySorterClient;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.screens.inventory.ContainerScreen;
-import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ChestMenu;
-import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(ContainerScreen.class)
-public class ContainerScreenMixin extends AbstractContainerScreen<ChestMenu> implements MenuAccess<ChestMenu> {
-    @Unique
-    private static final ResourceLocation CONTAINER_BACKGROUND = new ResourceLocation("textures/gui/container/generic_54.png");
-    @Mutable
+@Mixin(AbstractContainerScreen.class)
+public class ContainerScreenMixin {
+
     @Shadow
     @Final
-    private final int containerRows;
+    protected AbstractContainerMenu menu;
 
-    public ContainerScreenMixin(ChestMenu $$0, Inventory $$1, Component $$2) {
-        super($$0, $$1, $$2);
-        int $$3 = 222;
-        int $$4 = 114;
-        this.containerRows = $$0.getRowCount();
-        this.imageHeight = 114 + this.containerRows * 18;
-        this.inventoryLabelY = this.imageHeight - 94;
-    }
+    @Shadow
+    protected int leftPos;
+    @Shadow
+    protected int topPos;
 
-    @Override
-    protected void init() {
-        super.init();
-
+    @Inject(method = "init()V", at=@At("TAIL"))
+    void init(CallbackInfo ci) {
         ClientOnlySorterClient.slots = excludeLastNElements(this.menu.slots, 36);
-        /*
-        for (int m = 0; m < (this.menu).slots.size(); ++m) {
-            Slot slot = (this.menu).slots.get(m);
-            System.out.println(slot.getItem().getDisplayName().getString());
-        }
-         */
     }
 
     @Unique
@@ -60,12 +42,11 @@ public class ContainerScreenMixin extends AbstractContainerScreen<ChestMenu> imp
         return newSlots;
     }
 
-    @Override
-    public boolean keyPressed(int a, int b, int c) {
-        if (a == InputConstants.KEY_Y) {
+    @Inject(method = "keyPressed(III)Z", at=@At("HEAD"))
+    public void keyPressed(int $$0, int $$1, int $$2, CallbackInfoReturnable<Boolean> cir) {
+        if ($$0 == InputConstants.KEY_Y) {
             ClientOnlySorterClient.getInstance().sort(leftPos, topPos);
         }
-        return super.keyPressed(a, b, c);
     }
 
     /*
@@ -87,12 +68,4 @@ public class ContainerScreenMixin extends AbstractContainerScreen<ChestMenu> imp
         return super.mouseDragged($$0, $$1, $$2, $$3, $$4);
     }
      */
-
-    @Override
-    protected void renderBg(GuiGraphics $$0, float $$1, int $$2, int $$3) {
-        int $$4 = (this.width - this.imageWidth) / 2;
-        int $$5 = (this.height - this.imageHeight) / 2;
-        $$0.blit(CONTAINER_BACKGROUND, $$4, $$5, 0, 0, this.imageWidth, this.containerRows * 18 + 17);
-        $$0.blit(CONTAINER_BACKGROUND, $$4, $$5 + this.containerRows * 18 + 17, 0, 126, this.imageWidth, 96);
-    }
 }

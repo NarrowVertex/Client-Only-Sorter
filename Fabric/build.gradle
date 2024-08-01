@@ -38,7 +38,7 @@ loom {
 }
 
 loom.mixin {
-    defaultRefmapName = "pmh.mixin.refmap.json"
+    defaultRefmapName = "cos.mixin.refmap.json"
 }
 
 processResources {

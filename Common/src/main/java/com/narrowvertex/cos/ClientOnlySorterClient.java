@@ -50,6 +50,7 @@ public class ClientOnlySorterClient {
 //        containerScreen.mouseReleased(x + slot.x + 4, y + slot.y + 4, 0);
 
         // sortSlots(containerScreen, x, y, slots);
+
         SortThread sortThread = new SortThread(containerScreen, x, y, slots);
         sortThread.start();
     }

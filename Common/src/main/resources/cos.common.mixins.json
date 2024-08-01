@@ -6,9 +6,9 @@
   "server": [
   ],
   "mixins": [
-    "ContainerScreenMixin"
   ],
   "client": [
+    "ContainerScreenMixin"
   ],
   "minVersion": "0.8"
 }
