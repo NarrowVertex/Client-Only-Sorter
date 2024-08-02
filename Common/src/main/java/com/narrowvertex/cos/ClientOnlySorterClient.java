@@ -82,13 +82,28 @@ public class ClientOnlySorterClient {
         int n = slots.size();
         int leastID;
         int leastIDSlotIndex;
+
+        int id;
+        int nameCompare;
         for (int i = 0; i < n - 1; i++) {
             leastID = getID(slots.get(i));
             leastIDSlotIndex = i;
             for (int j = i + 1; j < n; j++) {
-                if (getID(slots.get(j)) < leastID) {
-                    leastID = getID(slots.get(j));
+                id = getID(slots.get(j));
+                if (id < leastID) {
+                    leastID = id;
                     leastIDSlotIndex = j;
+                }
+                else if (id == leastID) {
+                    nameCompare = getName(slots.get(j)).compareTo(getName(slots.get(leastIDSlotIndex)));
+                    if (nameCompare < 0) {
+                        leastIDSlotIndex = j;
+                    }
+                    else if (nameCompare == 0){
+                        if (getCount(slots.get(j)) > getCount(slots.get(leastIDSlotIndex))) {
+                            leastIDSlotIndex = j;
+                        }
+                    }
                 }
             }
             if(leastIDSlotIndex != i)
@@ -167,6 +182,14 @@ public class ClientOnlySorterClient {
         if(id == 0)
             id = 99999;
         return id;
+    }
+
+    static String getName(Slot slot) {
+        return slot.getItem().getDisplayName().getString();
+    }
+
+    static int getCount(Slot slot) {
+        return slot.getItem().getCount();
     }
 
     static void swap(ContainerScreen containerScreen, int x, int y, Slot slotA, Slot slotB) {
